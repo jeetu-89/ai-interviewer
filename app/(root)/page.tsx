@@ -10,16 +10,18 @@ import {
   getLatestInterviews,
 } from "@/lib/actions/general.action";
 
-async function Home() {
+export default async function Home() {
   const user = await getCurrentUser();
+  const userId = user?.id || "";
 
+  // Get both interview sets in parallel
   const [userInterviews, allInterview] = await Promise.all([
-    getInterviewsByUserId(user?.id!),
-    getLatestInterviews({ userId: user?.id! }),
+    getInterviewsByUserId(userId),
+    getLatestInterviews({ userId }),
   ]);
 
-  const hasPastInterviews = userInterviews?.length! > 0;
-  const hasUpcomingInterviews = allInterview?.length! > 0;
+  const hasPastInterviews = !!userInterviews?.length;
+  const hasUpcomingInterviews = !!allInterview?.length;
 
   return (
     <>
@@ -49,10 +51,10 @@ async function Home() {
 
         <div className="interviews-section">
           {hasPastInterviews ? (
-            userInterviews?.map((interview) => (
+            userInterviews.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id}
+                userId={userId}
                 interviewId={interview.id}
                 role={interview.role}
                 type={interview.type}
@@ -71,10 +73,10 @@ async function Home() {
 
         <div className="interviews-section">
           {hasUpcomingInterviews ? (
-            allInterview?.map((interview) => (
+            allInterview.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id}
+                userId={userId}
                 interviewId={interview.id}
                 role={interview.role}
                 type={interview.type}
@@ -90,5 +92,3 @@ async function Home() {
     </>
   );
 }
-
-export default Home;

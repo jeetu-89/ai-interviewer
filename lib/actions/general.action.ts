@@ -90,23 +90,47 @@ export async function getFeedbackByInterviewId(
   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
 }
 
+// export async function getLatestInterviews(
+//   params: GetLatestInterviewsParams
+// ): Promise<Interview[] | null> {
+//   const { userId, limit = 20 } = params;
+
+//   const interviews = await db
+//     .collection("interviews")
+//     .orderBy("createdAt", "desc")
+//     .where("finalized", "==", true)
+//     .where("userId", "!=", userId)
+//     .limit(limit)
+//     .get();
+
+//   return interviews.docs.map((doc) => ({
+//     id: doc.id,
+//     ...doc.data(),
+//   })) as Interview[];
+// }
 export async function getLatestInterviews(
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
   const { userId, limit = 20 } = params;
 
-  const interviews = await db
-    .collection("interviews")
-    .orderBy("createdAt", "desc")
-    .where("finalized", "==", true)
-    .where("userId", "!=", userId)
-    .limit(limit)
-    .get();
+  try {
+    const interviewsSnapshot = await db
+      .collection("interviews")
+      .where("finalized", "==", true)
+      .where("userId", "!=", userId)
+      .orderBy("userId") // Needed for '!=' queries
+      .orderBy("createdAt", "desc") // You can chain this after ordering by userId
+      .limit(limit)
+      .get();
 
-  return interviews.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Interview[];
+    return interviewsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Interview[];
+  } catch (error) {
+    console.error("Error fetching latest interviews:", error);
+    return null;
+  }
 }
 
 export async function getInterviewsByUserId(
