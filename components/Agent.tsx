@@ -140,35 +140,70 @@ const Agent = ({
   //   }
   // };
 
+  // const handleCall = async () => {
+  //   setCallStatus(CallStatus.CONNECTING);
+
+  //   if (type === "generate") {
+  //     await vapi.start(
+  //       undefined,
+  //       undefined,
+  //       undefined,
+  //       process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
+  //       {
+  //         variableValues: {
+  //           username: userName,
+  //           userid: userId,
+  //         },
+  //       }
+  //     );
+  //   } else {
+  //     let formattedQuestions = "";
+  //     if (questions) {
+  //       formattedQuestions = questions
+  //         .map((question) => `- ${question}`)
+  //         .join("\n");
+  //     }
+
+  //     await vapi.start(interviewer, {
+  //       variableValues: {
+  //         questions: formattedQuestions,
+  //       },
+  //     });
+  //   }
+  // };
+
+  //deepika
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
-
-    if (type === "generate") {
-      await vapi.start(
-        undefined,
-        undefined,
-        undefined,
-        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-        {
+    try {
+      if (type === "generate") {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
           variableValues: {
             username: userName,
             userid: userId,
           },
+          clientMessages: [],
+          serverMessages: [],
+        });
+      } else {
+        let formattedQuestions = "";
+        if (questions) {
+          formattedQuestions = questions
+            .map((question) => `- ${question}`)
+            .join("\n");
         }
-      );
-    } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
-      }
 
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+        await vapi.start(interviewer, {
+          variableValues: {
+            questions: formattedQuestions,
+          },
+          clientMessages: [],
+          serverMessages: [],
+        });
+      }
+    } catch (error) {
+      console.error("Error starting call:", error);
+      setCallStatus(CallStatus.INACTIVE);
     }
   };
 
