@@ -219,7 +219,7 @@ const Agent = ({
         <div className="card-interviewer">
           <div className="avatar">
             <Image
-              src="/ai-avatar.png"
+              src="/ailogo.png"
               alt="profile-image"
               width={65}
               height={54}
@@ -234,11 +234,11 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <Image
-              src="/user-avatar.png"
+              src="/user-avatar-1.png"
               alt="profile-image"
               width={539}
               height={539}
-              className="rounded-full object-cover size-[120px]"
+              className="rounded-full object-cover size-[150px]"
             />
             <h3>{userName}</h3>
           </div>

@@ -38,7 +38,7 @@ export default async function Home() {
         </div>
 
         <Image
-          src="/robot.png"
+          src="/mortar-board.png"
           alt="robo-dude"
           width={400}
           height={400}
